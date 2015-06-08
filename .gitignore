@@ -1,4 +1,4 @@
-Makefile
+_build
 ebin
 priv
 .eunit

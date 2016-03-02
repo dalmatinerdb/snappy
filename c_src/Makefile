@@ -1,9 +1,9 @@
 ERL ?= erl
 BASEDIR=$(CURDIR)
-PRIVDIR=$(BASEDIR)/../priv
+PRIVDIR=../priv
 
-NIF_DIR=$(BASEDIR)
-NIF_ENV=$(BASEDIR)/env.mk
+NIF_DIR=.
+NIF_ENV=./env.mk
 
 NIF_SOURCES := $(shell find $(NIF_DIR) -type f \( -name "*.c" -o -name "*.cc" \))
 NIF_OBJS=$(addsuffix .o, $(basename $(NIF_SOURCES)))

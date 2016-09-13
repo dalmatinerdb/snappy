@@ -39,18 +39,77 @@ init() ->
     _ -> ok
     end.
 
-
+%%--------------------------------------------------------------------
+%% @doc
+%% Compresses an iolist or binary using the snappy algorithm.
+%%
+%% When provided with an empty binary or iolist this will return
+%% {ok, <<>>} wich is a bit of a edge case, we adopt all other
+%% functions to work around this.
+%% @end
+%%--------------------------------------------------------------------
+-spec compress(iolist() | binary()) ->
+                      {ok, binary()} |
+                      {error, insufficient_memory | unknown}.
 compress(_IoList) ->
-    exit(snappy_nif_not_loaded).
+    erlang:nif_error(snappy_nif_not_loaded).
 
 
+%%--------------------------------------------------------------------
+%% @doc
+%% Decompresses an iolist or binary using the snappy algorithm.
+%%
+%% We handle the special case of an empty binary as true since
+%% {@link compress/1} can return an empty binary when fed with an
+%% empty binary.
+%% @end
+%%--------------------------------------------------------------------
+-spec decompress(iolist() | binary()) ->
+                        {ok, binary()} |
+                        {error, data_not_compressed |
+                         insufficient_memory |
+                         corrupted_data |
+                         unknown}.
+decompress(<<>>) ->
+    <<>>;
 decompress(_IoList) ->
-    exit(snappy_nif_not_loaded).
+    erlang:nif_error(snappy_nif_not_loaded).
 
 
+%%--------------------------------------------------------------------
+%% @doc
+%% Calculates the length after decompression for a compressed binary
+%% or iolist.
+%%
+%% We handle the special case of an empty binary as true since
+%% {@link compress/1} can return an empty binary when fed with an
+%% empty binary.
+%% @end
+%%--------------------------------------------------------------------
+-spec uncompressed_length(iolist()| binary()) ->
+                                 pos_integer() |
+                                 {error, data_not_compressed |
+                                  unknown}.
+uncompressed_length(<<>>) ->
+    0;
 uncompressed_length(_IoList) ->
-    exit(snappy_nif_not_loaded).
+    erlang:nif_error(snappy_nif_not_loaded).
 
 
+%%--------------------------------------------------------------------
+%% @doc
+%% Checks weather a binary or iolist is valid snappy compressed
+%% data.
+%%
+%% We handle the special case of an empty binary as true since
+%% {@link compress/1} can return an empty binary when fed with an
+%% empty binary.
+%% @end
+%%--------------------------------------------------------------------
+-spec is_valid(iolist() | binary()) ->
+                      boolean() |
+                      {error, unknown}.
+is_valid(<<>>) ->
+    true;
 is_valid(_IoList) ->
-    exit(snappy_nif_not_loaded).
+    erlang:nif_error(snappy_nif_not_loaded).
